@@ -1,0 +1,90 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://materialops.exam/contracts/ai-replenishment.schema.json",
+  "title": "AI Replenishment Suggestion",
+  "description": "限时版保障建议：读取当前库存、TODAY统计和适用知识；人工决定保存在分析记录。",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "warehouseId",
+    "itemId",
+    "suggestedQuantity",
+    "reason",
+    "confidence",
+    "needHuman",
+    "knowledgeReferences"
+  ],
+  "properties": {
+    "warehouseId": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "必须与本次分析的真实可见库存所属仓库一致。"
+    },
+    "itemId": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "必须与本次分析的真实可见库存物资一致。"
+    },
+    "suggestedQuantity": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 500,
+      "description": "0表示无需补充，可采纳为决定，不创建独立订单。"
+    },
+    "reason": {
+      "$ref": "#/$defs/nonblankString",
+      "maxLength": 2000
+    },
+    "references": {
+      "type": "array",
+      "maxItems": 0,
+      "description": "仅兼容空数组；本版不检索或引用历史单据，可省略。"
+    },
+    "confidence": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1,
+      "description": "模型分值，不代表准确率；低置信度复核为可选保护，不增加本版验收矩阵。"
+    },
+    "knowledgeReferences": {
+      "type": "array",
+      "description": "本次实际可见且适用的知识编号、标题、版本和原文摘录；无依据时为空数组并说明缺口。",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "docId",
+          "title",
+          "version",
+          "quote"
+        ],
+        "properties": {
+          "docId": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "quote": {
+            "$ref": "#/$defs/nonblankString"
+          },
+          "title": {
+            "$ref": "#/$defs/nonblankString"
+          },
+          "version": {
+            "type": "integer",
+            "minimum": 1
+          }
+        }
+      }
+    },
+    "needHuman": {
+      "type": "boolean"
+    }
+  },
+  "$defs": {
+    "nonblankString": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "\\S"
+    }
+  }
+}

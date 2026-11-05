@@ -1,0 +1,13 @@
+{
+  "type": "function",
+  "function": {
+    "name": "replace_with_candidate_tool_name",
+    "description": "考生自行定义工具名称、用途及参数；本文件只展示标准 tools 结构，不注册或执行任何工具。权限、参数及业务规则必须由服务端验证，不能提供任意 SQL 执行工具。",
+    "parameters": {
+      "type": "object",
+      "properties": {},
+      "required": [],
+      "additionalProperties": false
+    }
+  }
+}

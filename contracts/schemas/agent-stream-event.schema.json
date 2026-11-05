@@ -1,0 +1,138 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://materialops.exam/contracts/agent-stream-event.schema.json",
+  "title": "T3 SSE event",
+  "description": "B-TIMED-KIT-2026-10-19：meta、真实progress、完整result或error，序号仅在本次响应内使用。",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "id",
+    "event",
+    "data"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9_-]{1,64}:[1-9][0-9]*$"
+    },
+    "event": {
+      "enum": [
+        "meta",
+        "progress",
+        "result",
+        "error"
+      ]
+    },
+    "data": {
+      "type": "object"
+    }
+  },
+  "oneOf": [
+    {
+      "properties": {
+        "event": {
+          "const": "meta"
+        },
+        "data": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "sessionId",
+            "turnId"
+          ],
+          "properties": {
+            "sessionId": {
+              "$ref": "#/$defs/sessionId"
+            },
+            "turnId": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9_-]{1,64}$"
+            }
+          }
+        }
+      }
+    },
+    {
+      "properties": {
+        "event": {
+          "const": "progress"
+        },
+        "data": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "phase",
+            "message"
+          ],
+          "properties": {
+            "phase": {
+              "enum": [
+                "query",
+                "retrieval",
+                "model",
+                "validation",
+                "execute"
+              ]
+            },
+            "message": {
+              "$ref": "#/$defs/nonblank"
+            }
+          }
+        }
+      }
+    },
+    {
+      "properties": {
+        "event": {
+          "const": "result"
+        },
+        "data": {
+          "$ref": "agent-response.schema.json"
+        }
+      }
+    },
+    {
+      "properties": {
+        "event": {
+          "const": "error"
+        },
+        "data": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "code",
+            "message",
+            "outcome"
+          ],
+          "properties": {
+            "code": {
+              "$ref": "#/$defs/nonblank"
+            },
+            "message": {
+              "$ref": "#/$defs/nonblank"
+            },
+            "outcome": {
+              "enum": [
+                "FAILED",
+                "UNKNOWN"
+              ]
+            }
+          }
+        }
+      }
+    }
+  ],
+  "$defs": {
+    "nonblank": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "\\S"
+    },
+    "sessionId": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 64,
+      "pattern": "\\S"
+    }
+  }
+}

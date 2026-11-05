@@ -1,0 +1,113 @@
+{
+  "schemaVersion": 1,
+  "documents": [
+    {
+      "docId": 10101,
+      "title": "24V电源模块维护要求",
+      "version": 1,
+      "deptId": 110,
+      "itemNos": [
+        "PWR-24-A"
+      ],
+      "status": "ACTIVE",
+      "content": "PWR-24-A为24V电源模块。更换前核对设备铭牌、电压、接线极性及连接器型号，按现场规程断电、上锁挂牌、验电并确认储能释放后操作，禁止带电拔插。本文不提供扭矩或绝缘测试电压，缺少设备制造商依据时须另行核实。PWR-48-B为48V系列，不得混用。"
+    },
+    {
+      "docId": 10102,
+      "title": "48V电源模块识别",
+      "version": 1,
+      "deptId": 110,
+      "itemNos": [
+        "PWR-48-B"
+      ],
+      "status": "ACTIVE",
+      "content": "PWR-48-B是48V电源模块，不能替代PWR-24-A。更换前断电并核对铭牌和极性，本文没有实时库存。"
+    },
+    {
+      "docId": 10103,
+      "title": "历史盘点示例",
+      "version": 1,
+      "deptId": 110,
+      "itemNos": [
+        "PWR-24-A"
+      ],
+      "status": "ACTIVE",
+      "content": "2026年9月1日中心备件仓PWR-24-A盘点示例为99个。这是历史资料，不是当前余额，当前可用数量须查询库存。"
+    },
+    {
+      "docId": 10104,
+      "title": "现场风扇检查",
+      "version": 1,
+      "deptId": 111,
+      "itemNos": [
+        "FAN-120"
+      ],
+      "status": "ACTIVE",
+      "content": "散热风扇FAN-120更换前核对尺寸、电压和接口，断电后检查叶片、防护罩及散热方向。"
+    },
+    {
+      "docId": 10105,
+      "title": "线缆维护一般要求",
+      "version": 1,
+      "deptId": null,
+      "itemNos": [
+        "CBL-2M"
+      ],
+      "status": "ACTIVE",
+      "content": "连接线缆CBL-2M使用前检查长度、接口规格及绝缘外皮。发现破损停止使用并交线下处理。"
+    },
+    {
+      "docId": 10106,
+      "title": "外部保障检查资料",
+      "version": 1,
+      "deptId": 210,
+      "itemNos": [
+        "PWR-24-A"
+      ],
+      "status": "ACTIVE",
+      "content": "外部保障部门PWR-24-A检查记录标识为外保-青鹭-731，仅用于本部门虚构权限验证。操作仍须核对铭牌并断电。"
+    },
+    {
+      "docId": 10107,
+      "title": "通用账面领退口径",
+      "version": 2,
+      "deptId": null,
+      "itemNos": [],
+      "status": "ACTIVE",
+      "content": "领用即记账出库，原单全部未使用且完好时整单退回原库存。原始领用量不抵扣退回。账面调拨须查询两库、展示预览并取得明确确认。本资料不是某种设备的维修规程。 补货建议应核对当前库存、补货点、目标库存和实际领用情况；采纳只形成分析记录内的待办补充计划，不等于采购、到货或调拨确认。"
+    },
+    {
+      "docId": 10108,
+      "title": "电源维护旧版资料",
+      "version": 1,
+      "deptId": 110,
+      "itemNos": [
+        "PWR-24-A"
+      ],
+      "status": "INACTIVE",
+      "content": "旧版记录曾称电源可直接拔插。本资料已停用，不得用于当前维护结论。"
+    },
+    {
+      "docId": 10109,
+      "title": "风扇检查频率说明甲",
+      "version": 1,
+      "deptId": null,
+      "itemNos": [
+        "FAN-120"
+      ],
+      "status": "ACTIVE",
+      "content": "测试设备FAN-120在本说明覆盖场景下每月检查一次防护罩。"
+    },
+    {
+      "docId": 10110,
+      "title": "风扇检查频率说明乙",
+      "version": 1,
+      "deptId": 111,
+      "itemNos": [
+        "FAN-120"
+      ],
+      "status": "ACTIVE",
+      "content": "测试设备FAN-120在与说明甲相同场景下每季度检查一次防护罩。两份有效资料存在频率冲突，需人工核实。"
+    }
+  ]
+}

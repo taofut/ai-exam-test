@@ -1,0 +1,35 @@
+{
+  "comment": "B-TIMED-KIT-2026-10-19：单物资/套料版本保护，本日统计，分析记录内计划，最低SSE调拨。",
+  "storageTimezone": "UTC",
+  "displayTimezone": "Asia/Shanghai",
+  "lowConfidenceThreshold": 0.6,
+  "maxReplenishQuantity": 500,
+  "countsIntegersOnly": true,
+  "returnMode": "FULL",
+  "normalRequestUsesRealModel": true,
+  "rules": {
+    "inventoryUniqueness": "仓库/物资唯一库存，数量和版本非负；目标库存不低于补货点。",
+    "referenceValidation": "知识docId/title/version/quote来自本次实际可见资料，quote连续原文；不要求历史引用。",
+    "degradedOwnership": "模型错误可立即降级，无需自动重试；依据真实库存计算差额，明确失败原因及复核。",
+    "humanReview": "无适用维护知识（包括仅命中通用资料）、明确冲突或模型降级须reviewed=true才采纳；权限和库存版本不能被复核绕过。",
+    "knowledgeVisibility": "deptId=null为公共可见；指定部门须在当前用户部门权限范围内，先授权再送入模型；只有ACTIVE资料可支持当前结论。",
+    "knowledgeApplicability": "itemNos非空时限定适用物资，关键词不能越过此限制；空数组为通用资料，仅支持正文覆盖的通用规则，不能替代物资维护依据。",
+    "zeroSuggestion": "0表示无需补充，允许采纳为分析记录内的决定。",
+    "adoptionEffect": "在t_ai_call_log保存final_suggestion、decision及context.decisionMeta，不要求t_replenishment_draft和额外审计事务；库存不变。",
+    "fullReturn": "单物资或套料原单全退原数量/原仓，套料只能父单整退；已退拒绝，同单状态/版本保护只一次。ADMIN及DISPATCHER可在当前仓库权限范围内代退，ENGINEER仅本人且原仓当前有权，REPORTER禁止；原领用人不变，退回流水审计记录实际操作者。",
+    "transactionBoundary": "单物资及套料的所有库存、父单/明细、流水/审计同事务；T3两库、调拨单、确认唯一标识和流水审计同事务。无需T1成功请求缓存。",
+    "confirmation": "本人明确确认绑定两库/物资/数量/版本的预览；冲突提示后用户重新预览。核对先检查本人、原有效会话及当前双库权限，再查询成功记录；成功令牌过期仍可返回原结果，不校验旧版本或再次写入。未成功且令牌有效时可完成原次确认，过期或作废则拒绝，界面须说明核对/完成原次确认。",
+    "identityAndAuthorization": "X-User服务端解析，筛选与ACL取交集；资料和模型不能授权。",
+    "time": "UTC保存、Asia/Shanghai展示，服务端业务模拟时钟。",
+    "today": "北京时间[00:00,次日00:00)，排除未来记录，退回不抵扣。",
+    "issueStatistics": "本日按明细和物资单位分别累计，套料父单不重复计量，退回不抵扣。",
+    "analysisStatisticsScope": "T2固定统计当前库存warehouseId+itemId，包含该仓该物资全部领用人；不跨仓、不仅当前操作者。context.issueStats.scope明确实际仓库及物资，asOf为本次服务端业务模拟时间。",
+    "datasetInitialization": "0004提供领用表，既有初始化/回填负责历史导入，不再扣增当前库存；考生不实现历史迁移平台。",
+    "sse": "保留真实progress和完整result/error，支持一次拆帧/粘包；不要求token流、心跳矩阵、回放或自动重连。"
+  },
+  "exampleClock": {
+    "now": "2026-10-12T02:00:00Z",
+    "shanghaiTodayStart": "2026-10-11T16:00:00Z",
+    "shanghaiTomorrowStart": "2026-10-12T16:00:00Z"
+  }
+}

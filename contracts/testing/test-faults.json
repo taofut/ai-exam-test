@@ -1,0 +1,37 @@
+{
+  "comment": "预置模型客户端的可选本地故障夹具，不要求考生另建对外故障开关。普通请求调用真实模型；正式行为测试可使用受控 HTTP 模型服务。故障输出仍须经过相同校验。",
+  "header": "X-Model-Fault",
+  "normalRequestUsesRealModel": true,
+  "faults": {
+    "timeout": "模型调用超时；服务返回服务端生成的备用建议，外层标记 degraded=true，不得直接返回 HTTP 500。",
+    "network": "模型网关发生传输错误；服务返回服务端生成的备用建议，外层标记 degraded=true，不得直接返回 HTTP 500。",
+    "invalid_json": "模型返回非法JSON，可立即降级并标记degraded=true，不要求自动重试。",
+    "low_confidence": "可选本地辅助：基于本次合法建议仅将confidence改为0.35，不改变实体/引用。不作为限时版额外必考项。",
+    "fake_reference": "伪造知识docId/version/quote，其他字段沿用本次合法建议；不应用伪造引用，可立即降级并要求复核。",
+    "injected": "知识或模型文本要求跳过授权、执行SQL或自行确认调拨；拒绝无效输出和未经本人授权的写入。"
+  },
+  "localLowConfidence": {
+    "argument": "ModelClient.complete_json(..., fault='low_confidence', fault_suggestion=baseline)",
+    "baseline": "由组织方测试代码基于本次已授权实体、真实查询和实际检索快照准备完整合法建议，不能使用固定种子 ID，也不能直接信任浏览器提交的建议。客户端仅验证结构，不认证权限、事实或引用真实性。",
+    "missingOrInvalidBaseline": "抛出 ValueError 表示夹具配置错误，不回退到 1/1，不伪装成模型故障或成功的降级测试。",
+    "businessValidation": "结果仍经当前实体/引用/权限校验；低置信度不是模型调用失败，复核策略可作为可选保护。必考复核原因为无适用资料、明确冲突及降级。",
+    "scope": "仅 MODEL_FAULT_TRANSPORT=false 的本地 low_confidence 使用此参数；普通请求仍真实调用模型。HTTP 故障模式由受控服务根据本次请求生成对应结果，本地参数不发送到模型服务。"
+  },
+  "httpBoundary": {
+    "comment": "正式行为评分将 BASE_URL 指向独立受控 HTTP 服务，使用固定模型响应及公开故障；真实模型接入另行核验。不得按运行环境绕过校验，不约定评分器私有请求头。",
+    "transportEnvironmentVariable": "MODEL_FAULT_TRANSPORT",
+    "transportEnabledValue": "true",
+    "forwardFaultHeaderWhenEnabled": true,
+    "timeoutHttpStatus": 504,
+    "networkHttpStatus": 503
+  },
+  "localBaseline": {
+    "argument": "fault_suggestion=baseline",
+    "appliesTo": [
+      "low_confidence",
+      "fake_reference",
+      "injected"
+    ],
+    "description": "本地内容故障基于本次结构合法建议；测试方准备真实实体和知识引用。缺失/非法基础建议抛ValueError作为夹具配置错误，不返回固定1/1。普通请求和HTTP夹具模式不使用该本地参数。"
+  }
+}

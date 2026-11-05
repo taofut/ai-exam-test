@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "人工修改后采纳请求",
+  "description": "人工修改后采纳请求：提交最终数量、理由和复核确认；原实体及引用由服务端沿用，权限、库存版本和必须复核的规则不能被请求覆盖。最终计划保存在原分析记录内。",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "suggestedQuantity",
+    "reason",
+    "reviewed"
+  ],
+  "properties": {
+    "suggestedQuantity": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 500
+    },
+    "reason": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 2000,
+      "pattern": "\\S"
+    },
+    "reviewed": {
+      "type": "boolean"
+    }
+  }
+}

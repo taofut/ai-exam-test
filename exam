@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+set -euo pipefail
+material_entry_path="${BASH_SOURCE[0]}"
+if [[ "$material_entry_path" == */* ]]; then
+  MATERIAL_ROOT="$(cd -- "${material_entry_path%/*}" && pwd)"
+else
+  MATERIAL_ROOT="$(pwd)"
+fi
+exec "$BASH" "$MATERIAL_ROOT/scripts/exam.sh" "$@"

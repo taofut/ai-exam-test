@@ -1,0 +1,74 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "预置只读维护知识",
+  "description": "T2/T3 使用的固定只读资料。先按当前部门权限过滤，再检查 ACTIVE 状态、适用物资及正文；不要求知识导入、Embedding 或向量索引。仅有通用资料不能解除缺少物资维护依据的复核要求。",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "documents"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": 1
+    },
+    "documents": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "docId",
+          "title",
+          "content",
+          "version",
+          "deptId",
+          "itemNos",
+          "status"
+        ],
+        "properties": {
+          "docId": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "title": {
+            "type": "string",
+            "minLength": 1
+          },
+          "content": {
+            "type": "string",
+            "minLength": 1
+          },
+          "version": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "deptId": {
+            "description": "null 表示对已认证用户公共可见；部门 ID 须在当前用户部门权限范围内。可见性不代表物资适用性。",
+            "type": [
+              "integer",
+              "null"
+            ],
+            "minimum": 1
+          },
+          "itemNos": {
+            "type": "array",
+            "description": "非空时限定适用物资编号，关键词命中不能越过此限制；空数组表示通用资料，只支持正文覆盖的通用规则，不自动作为所有物资的维护依据。",
+            "uniqueItems": true,
+            "items": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "status": {
+            "description": "只有 ACTIVE 且当前可见、适用的资料可作为依据；INACTIVE 不支持当前结论。",
+            "enum": [
+              "ACTIVE",
+              "INACTIVE"
+            ]
+          }
+        }
+      }
+    }
+  }
+}

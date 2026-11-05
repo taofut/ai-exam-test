@@ -1,0 +1,207 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://materialops.exam/contracts/agent-response.schema.json",
+  "title": "Material Agent Success Response",
+  "description": "B-TIMED-KIT-2026-10-19：SSE完整result，原令牌显式核对原结果；JSON兼容可选。",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "status",
+    "answer",
+    "sessionId"
+  ],
+  "properties": {
+    "status": {
+      "enum": [
+        "OK",
+        "CONFIRM_REQUIRED",
+        "EXECUTED"
+      ]
+    },
+    "answer": {
+      "type": "string"
+    },
+    "sessionId": {
+      "$ref": "#/$defs/nonblankString",
+      "maxLength": 64,
+      "description": "服务端生成并绑定当前用户的会话标识；本版每次成功响应必返。"
+    },
+    "data": {
+      "type": [
+        "object",
+        "array",
+        "null"
+      ]
+    },
+    "citations": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "docId",
+          "title",
+          "version",
+          "quote"
+        ],
+        "properties": {
+          "docId": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "title": {
+            "type": "string",
+            "minLength": 1
+          },
+          "version": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "quote": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
+    "preview": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "源库和目标库必须不同且关联同一 itemId；名称、当前 onHand 与签发时双版本来自真实库存查询。预览不改变业务数据。",
+      "required": [
+        "itemId",
+        "itemName",
+        "fromWarehouseId",
+        "toWarehouseId",
+        "quantity",
+        "fromOnHand",
+        "toOnHand",
+        "fromVersion",
+        "toVersion"
+      ],
+      "properties": {
+        "itemId": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "itemName": {
+          "$ref": "#/$defs/nonblankString"
+        },
+        "fromWarehouseId": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "toWarehouseId": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "quantity": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "fromOnHand": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "toOnHand": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "fromVersion": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "toVersion": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "fromAfter": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "toAfter": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    },
+    "confirmToken": {
+      "$ref": "#/$defs/nonblankString"
+    },
+    "confirmExpiresAt": {
+      "$ref": "#/$defs/zonedDateTime",
+      "description": "晚于签发时刻，不限定固定 TTL；到期后未成功的确认不得执行。已成功的原令牌仍可由本人在原有效会话且当前有双库权限时核对原执行结果，不再写入或校验旧库存版本。"
+    },
+    "transferNo": {
+      "$ref": "#/$defs/nonblankString",
+      "description": "确认后真实成功调拨的编号，不限定格式或种子值。"
+    },
+    "toolTrace": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      },
+      "description": "可选调试信息，不强制工具编排或调用轨迹。"
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "status": {
+            "const": "CONFIRM_REQUIRED"
+          }
+        },
+        "required": [
+          "status"
+        ]
+      },
+      "then": {
+        "required": [
+          "preview",
+          "confirmToken",
+          "confirmExpiresAt"
+        ]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "status": {
+            "const": "EXECUTED"
+          }
+        },
+        "required": [
+          "status"
+        ]
+      },
+      "then": {
+        "required": [
+          "transferNo",
+          "data"
+        ],
+        "properties": {
+          "data": {
+            "type": [
+              "object",
+              "array"
+            ],
+            "description": "包含真实调拨记录及两库存执行后的结果；具体实体、数量和版本由业务校验，不得伪造。"
+          }
+        }
+      }
+    }
+  ],
+  "$defs": {
+    "nonblankString": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "\\S"
+    },
+    "zonedDateTime": {
+      "type": "string",
+      "format": "date-time",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(?:\\.[0-9]+)?(?:Z|[+-][0-9]{2}:[0-9]{2})$"
+    }
+  }
+}
